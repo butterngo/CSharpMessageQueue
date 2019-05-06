@@ -9,7 +9,7 @@
     {
         event Action<CSharpMessage> OnHandleReceivedMessage;
 
-        event Action<CompletedMessageReceivedEvent> OnHandleCompletedMessageReceived;
+        event Action<CompletedMessageReceived> OnHandleCompletedMessageReceived;
 
         event Action<CSharpMessage> OnHandlePublishFail;
 
@@ -22,8 +22,6 @@
         event Action<object, CSharpMessage> OnLostConnection;
 
         Task SendAsync(CSharpMessage message);
-
-        Task ProcessCompletedMessageAsync(CSharpMessage message);
 
         void StartConnection();
     }

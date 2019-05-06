@@ -11,7 +11,7 @@
     {
         public event Action<CSharpMessage> OnHandleReceivedMessage;
 
-        public event Action<CompletedMessageReceivedEvent> OnHandleCompletedMessageReceived;
+        public event Action<CompletedMessageReceived> OnHandleCompletedMessageReceived;
 
         public event Action<CSharpMessage> OnHandlePublishFail;
 
@@ -27,31 +27,32 @@
 
         private readonly object sync_root = new object();
 
+        private readonly string _uniqueKey;
+
         private bool IsConnected = false;
 
         public CSharpClientConnectionFactory(string host, string uniqueKey)
         {
+            _uniqueKey = uniqueKey;
+
             HubConnectionFactory.InitHubConnection($"{host}?uniqueKey={uniqueKey}",
                                                 NotifyUserConnect,
                                                 NotifyUserDisconnect,
                                                 NotifyUserDuplicated,
                                                 MessageReceived,
-                                                CompletedMessageReceived,
+                                                ProcessCompletedMessage,
                                                 OnClosed);
 
             _hubConnection = HubConnectionFactory.HubConnection;
 
         }
 
-        public async Task ProcessCompletedMessageAsync(CSharpMessage message)
-        {
-            await _hubConnection.SendAsync("ProcessCompletedMessageAsync", message);
-        }
-
         public async Task SendAsync(CSharpMessage message)
         {
             if (IsConnected)
             {
+                message.From = _uniqueKey;
+
                 await _hubConnection.SendAsync("SendAsync", message);
             }
             else
@@ -117,12 +118,22 @@
             OnNotifyUserDuplicated?.Invoke(this, msg);
         }
 
-        private void MessageReceived(CSharpMessage message)
+        private async void MessageReceived(CSharpMessage message)
         {
             OnHandleReceivedMessage?.Invoke(message);
+
+            if (IsConnected)
+            {
+               await _hubConnection.SendAsync("CompletedMessageReceived",
+                   new CompletedMessageReceived
+                   {
+                        From = message.From,
+                        Message = message
+                   });
+            }
         }
 
-        private void CompletedMessageReceived(CompletedMessageReceivedEvent message)
+        private void ProcessCompletedMessage(CompletedMessageReceived message)
         {
             OnHandleCompletedMessageReceived?.Invoke(message);
         }

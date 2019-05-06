@@ -19,7 +19,7 @@
             Action<NotifyUserDisConnectEvent> notifyUserDisconnect,
             Action<NotifyUserDuplicatedEvent> notifyUserDuplicated,
             Action<CSharpMessage> messageReceived,
-            Action<CompletedMessageReceivedEvent> completedMessageReceived,
+            Action<CompletedMessageReceived> completedMessageReceived,
             Func<Exception, Task> onClosed)
         {
             _instance = new Lazy<HubConnection>(() =>

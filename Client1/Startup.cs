@@ -21,7 +21,10 @@
                 app.UseDeveloperExceptionPage();
             }
 
-            app.StartConnection();
+            app.StartConnection().OnHandleCompletedMessageReceived += async (message) => 
+            {
+                var test = message;
+            };
 
             app.UseMvc();
         }

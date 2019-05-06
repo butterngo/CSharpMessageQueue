@@ -14,11 +14,33 @@ namespace Client2
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            Console.Title = "Client2";
+
+            var host = WebHost.CreateDefaultBuilder(args)
+             .UseStartup<Startup>()
+              .UseEnvironment(Environment)
+              .UseUrls("http://*:5001")
+              .Build();
+
+            host.Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+        private static string Environment
+        {
+            get
+            {
+                var path = $"{AppDomain.CurrentDomain.BaseDirectory}\\Environment.txt";
+
+                if (!File.Exists(path))
+                {
+                    path = $"{Directory.GetCurrentDirectory()}\\Environment.txt";
+
+                    if (!File.Exists(path)) return "Development";
+
+                }
+
+                return File.ReadAllText(path);
+            }
+        }
     }
 }

@@ -85,6 +85,15 @@
             await Task.WhenAll(listTask);
         }
 
+        public async Task CompletedMessageReceived(CompletedMessageReceived message)
+        {
+            if (_client.TryGetValue(message.From, out string connectionId))
+            {
+                await Clients.Client(connectionId).SendCoreAsync("CompletedMessageReceived", new[] { message });
+            }
+            
+        }
+
         private async Task NotifyUserConnect(string uniqueKey)
         {
             await Clients.Client(Context.ConnectionId)
