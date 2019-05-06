@@ -17,6 +17,9 @@ You need to open appsettings.Development.json and change your configuration or k
 - EnableLog: if you want the system log message set true, else false.
 # Configuration log
 Open file log4net.config change your folder path inline "log4net.Util.PatternString".
+```
+  <file type="log4net.Util.PatternString" value="C:\inetpub\wwwroot\SiteOneServiceBus\\logs\\debugger\\%date{dd_MM_yyyy}.log" />
+```
 # Create Window service
 You need create a publish from visual studio or use the command line, continue create file Environment.txt, make follow your Environment, then you just create services follow the article https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/sc-create.
 # CSharpMessageQueueClient
