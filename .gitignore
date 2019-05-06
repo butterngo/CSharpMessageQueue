@@ -1,0 +1,13 @@
+/CSharpMessageQueueClient/bin
+/Client1/bin
+/Client1/obj
+/Client2/obj
+/Client2/bin
+/CSharpMessageQueue/obj
+/CSharpMessageQueue/bin
+/CSharpMessageQueueClient/obj
+/.vs/CSharpMessageQueue/v15/.suo
+/.vs/CSharpMessageQueue/v15/Server/sqlite3/db.lock
+/.vs/CSharpMessageQueue/v15/Server/sqlite3/storage.ide
+/.vs/CSharpMessageQueue/v15/Server/sqlite3/storage.ide-shm
+/.vs/CSharpMessageQueue/v15/Server/sqlite3/storage.ide-wal
