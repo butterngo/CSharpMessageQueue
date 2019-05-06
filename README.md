@@ -115,4 +115,4 @@ I develop it by signlr core client, it's help us connect, received, send and tra
             return Ok("Done");
         }
    ```
-  
+  You cant access to my blog we have a lot of example fot it http://www.c-sharp.vn/.
