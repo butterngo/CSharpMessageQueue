@@ -8,6 +8,7 @@
         {
             Id = Guid.NewGuid();
             SendDate = DateTime.UtcNow;
+           
         }
 
         public Guid Id { get; set; }

@@ -1,31 +1,25 @@
 ﻿namespace Client1.Controllers
 {
-    using CSharpMessageQueueClient;
-    using CSharpMessageQueueClient.Models;
+    using Client1.Events;
+    using CSharpEventBus;
     using Microsoft.AspNetCore.Mvc;
-    using System.Text;
     using System.Threading.Tasks;
 
     [ApiController]
     [Route("/api/notifications")]
     public class NotificationsController : ControllerBase
     {
-        private readonly ICSharpClientConnectionFactory _client;
+        private readonly IEventBus _eventBus;
 
-        public NotificationsController(ICSharpClientConnectionFactory client)
+        public NotificationsController(IEventBus eventBus)
         {
-            _client = client;
+            _eventBus = eventBus;
         }
 
-        [Route("{message}")]
-        public async Task<IActionResult> Post(string message)
+        [Route("")]
+        public async Task<IActionResult> Post([FromBody] UserEvent dto)
         {
-            await _client.SendAsync(new CSharpMessage
-            {
-                Body = Encoding.UTF8.GetBytes(message),
-                Tos = new string[] { "client2" },
-                Label = "test send to client 2"
-            });
+            await _eventBus.PublishAsync(dto, new string[] { "client2" });
 
             return Ok("Done");
         }

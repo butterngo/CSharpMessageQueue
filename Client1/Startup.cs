@@ -1,5 +1,6 @@
 ﻿namespace Client1
 {
+    using CSharpEventBus;
     using CSharpMessageQueueClient;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -12,6 +13,8 @@
             services.AddMvc();
 
             services.RegisterCSharpClient("http://localhost:7500/c-sharp-message-queue", "client1");
+
+            services.AddSingleton<IEventBus, CSharpEventBusHandler>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -21,10 +24,7 @@
                 app.UseDeveloperExceptionPage();
             }
 
-            app.StartConnection().OnHandleCompletedMessageReceived += async (message) => 
-            {
-                var test = message;
-            };
+            app.StartConnection();
 
             app.UseMvc();
         }

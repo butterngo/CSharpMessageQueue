@@ -1,10 +1,11 @@
 ﻿namespace Client2
 {
+    using Client2.Events;
+    using CSharpEventBus;
     using CSharpMessageQueueClient;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.DependencyInjection;
-    using System.Text;
 
     public class Startup
     {
@@ -13,6 +14,10 @@
             services.AddMvc();
 
             services.RegisterCSharpClient("http://localhost:7500/c-sharp-message-queue", "client2");
+
+            services.AddSingleton<IEventBus, CSharpEventBusHandler>();
+
+            services.AddTransient<IIntegrationEventHandler<UserEvent>, CSharpEventHandler>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -22,12 +27,19 @@
                 app.UseDeveloperExceptionPage();
             }
 
-            app.StartConnection().OnHandleReceivedMessage += (message) =>
-            {
-                var test = Encoding.UTF8.GetString(message.Body);
-            };
+            SubscribeEvents(app);
 
             app.UseMvc();
+        }
+
+        public void SubscribeEvents(IApplicationBuilder app)
+        {
+            var eventBus = app.ApplicationServices
+             .GetRequiredService<IEventBus>();
+
+            eventBus.Subscribe(app.ApplicationServices.GetService<IIntegrationEventHandler<UserEvent>>());
+
+            app.StartConnection();
         }
     }
 }

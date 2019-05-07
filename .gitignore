@@ -12,3 +12,5 @@
 /.vs/CSharpMessageQueue/v15/Server/sqlite3/storage.ide-shm
 /.vs/CSharpMessageQueue/v15/Server/sqlite3/storage.ide-wal
 /CSharpMessageQueue/publish
+/CSharpEventBus/obj
+/CSharpEventBus/bin

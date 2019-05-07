@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CSharpEventBus\CSharpEventBus.csproj" />
     <ProjectReference Include="..\CSharpMessageQueueClient\CSharpMessageQueueClient.csproj" />
   </ItemGroup>
 
