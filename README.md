@@ -24,7 +24,7 @@ Open file log4net.config change your folder path inline "log4net.Util.PatternStr
 You need create a publish from visual studio or use the command line, continue create file Environment.txt, make follow your Environment, then you just create services follow the article https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/sc-create.
 # CSharpMessageQueueClient
 you using dotnet core version 2.2.0 and signalr core 1.1.0 
-# Description:
+# Description
 I develop it by signlr core client, it's help us connect, received, send and tracking message between client and server.
 # Documentation
 - Configuration host server and client name reminder client name is unique.
