@@ -1,6 +1,6 @@
-# CSharpMessageQueue: 
+# CSharpMessageQueue
 you using dotnet core version 2.2.0 and signalr core 1.1.0 
-# Description:
+# Description
 This is message queue server it's help you delivery message to client visa signlr from microsoft. 
 You can using javascript signlr or use signlr client from BE received message.
 # Configuration server
