@@ -12,19 +12,18 @@
             if (allowOrigins.Equals("*"))
             {
                 app.UseCors(builder => builder
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials());
+                      .AllowAnyOrigin()
+                      .AllowAnyMethod()
+                      .AllowAnyHeader()
+                      .AllowCredentials());
             }
             else
             {
                 app.UseCors(builder => builder
                 .SetIsOriginAllowedToAllowWildcardSubdomains()
-                .WithOrigins(allowOrigins.Split(","))
+                .WithOrigins(new string[] { "http://localhost:3000" })
                 .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials());
+                .AllowAnyHeader());
             }
 
             return app;

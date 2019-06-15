@@ -17,13 +17,14 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors();
+            services.AddMvc();
 
-            //services.AddMvc();
+            services.AddCors();
 
             services.AddSignalR(options =>
             {
                 options.KeepAliveInterval = TimeSpan.FromSeconds(10);
+                options.EnableDetailedErrors = true;
             });
 
             services.AddSingleton(Configuration);
@@ -36,8 +37,6 @@
 
             //app.UseAuthentication();
 
-            //app.UseMvc();
-
             app.UseSignalR(routes => 
             {
                 routes.MapHub<CSharpMessageHub>(Configuration.GetValue<string>("EndPoint"),
@@ -47,6 +46,7 @@
                     });
             });
 
+            app.UseMvc();
         }
     }
 }
