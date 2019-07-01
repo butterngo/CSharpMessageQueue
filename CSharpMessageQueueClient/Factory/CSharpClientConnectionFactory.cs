@@ -137,5 +137,15 @@
         {
             OnHandleCompletedMessageReceived?.Invoke(message);
         }
+
+        /// <summary>
+        /// Implementation your logic
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public Task ProcessCompletedMessageAsync(CSharpMessage message)
+        {
+            return Task.FromResult(0);
+        }
     }
 }

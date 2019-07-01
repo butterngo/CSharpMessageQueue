@@ -134,7 +134,7 @@
 
         }
 
-        private void HandleCompletedMessageReceived(CompletedMessageReceivedEvent args)
+        private void HandleCompletedMessageReceived(CompletedMessageReceived args)
         {
             //TODO Some logic
         }

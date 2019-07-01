@@ -21,6 +21,8 @@
 
         event Action<object, CSharpMessage> OnLostConnection;
 
+        Task ProcessCompletedMessageAsync(CSharpMessage message);
+
         Task SendAsync(CSharpMessage message);
 
         void StartConnection();
