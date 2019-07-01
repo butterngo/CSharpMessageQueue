@@ -33,9 +33,15 @@
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
 
-            app.AllowOrigins(Configuration);
+            //app.AllowOrigins(Configuration);
 
             //app.UseAuthentication();
+
+            app.UseCors(builder => builder
+               .SetIsOriginAllowedToAllowWildcardSubdomains()
+               .WithOrigins(new string[] { "http://localhost:3000" })
+               .AllowAnyMethod()
+               .AllowAnyHeader());
 
             app.UseSignalR(routes => 
             {
