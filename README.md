@@ -3,6 +3,7 @@ you using dotnet core version 2.2.0 and signalr core 1.1.0
 # Description
 This is a message queue server it helps you a delivery message to the client visa signal. 
 You can be using a javascript signal or use signal client from BE received message.
+Easily integrate with other popular javascript such as "reactjs, angular, veujs".
 # Configuration server
 You need to open appsettings.Development.json and change your configuration or keep it.
 - {
