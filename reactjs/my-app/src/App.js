@@ -1,65 +1,96 @@
 import React, { Component } from "react";
 import './App.css';
 import * as signalR from '@aspnet/signalr';
+import * as uuidv4 from 'uuid/v4';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+toast.configure({
+  autoClose: 2000,
+  draggable: false,
+  //etc you get the idea
+});
+
 class App extends Component {
   constructor(props) {
     super(props);
     
+    this.uniqueKey = uuidv4();
+     
+    this.state = { name:"", value:"", messages:[] };
   }
 
-   toUTF8Array(str) {
-    let utf8 = [];
-    for (let i = 0; i < str.length; i++) {
-        let charcode = str.charCodeAt(i);
-        if (charcode < 0x80) utf8.push(charcode);
-        else if (charcode < 0x800) {
-            utf8.push(0xc0 | (charcode >> 6),
-                      0x80 | (charcode & 0x3f));
-        }
-        else if (charcode < 0xd800 || charcode >= 0xe000) {
-            utf8.push(0xe0 | (charcode >> 12),
-                      0x80 | ((charcode>>6) & 0x3f),
-                      0x80 | (charcode & 0x3f));
-        }
-        // surrogate pair
-        else {
-            i++;
-            // UTF-16 encodes 0x10000-0x10FFFF by
-            // subtracting 0x10000 and splitting the
-            // 20 bits of 0x0-0xFFFFF into two halves
-            charcode = 0x10000 + (((charcode & 0x3ff)<<10)
-                      | (str.charCodeAt(i) & 0x3ff));
-            utf8.push(0xf0 | (charcode >>18),
-                      0x80 | ((charcode>>12) & 0x3f),
-                      0x80 | ((charcode>>6) & 0x3f),
-                      0x80 | (charcode & 0x3f));
-        }
-    }
-    return utf8;
-}
-  componentDidMount(){
+  notifyUserConnected = (data) => {
+    toast.success(`${data.profile.name} connected`);
+  }
+  
+  notifyUserDisConnected = (data) => {
+    toast.info(`${data.profile.name} disconnected`);
+  }
+  
+  notifyUserDuplicated = (data) => {
+    toast.error(`The unique-key is Duplication:  ${data.uniqueKey}`);
+  }
+  
+  messageReceived = (data) =>{
     
-    
-    const connection = new signalR.HubConnectionBuilder()
-		.withUrl("http://localhost:7500/c-sharp-message-queue", {})
-		.build();
-connection.start().then(function () {
-    console.log("connected");
-});
-    
-   /* var bytes = this.toUTF8Array("testvu");
-    console.log(bytes);*/
+    this.state.messages.push(data);
 
-   /* this.connection.on("send", data => {
-      console.log(data);
+    this.setState({ messages: this.state.messages});
+  }
+  
+  handleChangeMessge = (e) => { 
+    this.setState({ value: e.target.value });
+  }
+
+  handleChangeName = (e) => { 
+    this.setState({ name: e.target.value });
+  }
+
+  handleSend = (e) => {
+    this.connection.invoke("SendAsync", { 
+      body: this.state.value,
+      sendToAll:true
     });
+  };
+  
+  handleConnection = (e) => {
+    this.connection = new signalR.HubConnectionBuilder()
+    .withUrl(`http://localhost:7500/js/c-sharp-message-queue?uniqueKey=${this.uniqueKey}&name=${this.state.name}`, {})
+    .build();
+
+    this.connection.start().then(function () { });
+
+    this.connection.on("NotifyUserConnected", this.notifyUserConnected);
    
-   */
-  }
+    this.connection.on("NotifyUserDisConnected", this.notifyUserDisConnected);
+
+    this.connection.on("NotifyUserDuplicated", this.notifyUserDuplicated);
+
+    this.connection.on("MessageReceived", this.messageReceived);
+  };
 
   render() {
     return (
-      <div>My name is butter</div>
+      <div style={{ marginLeft:"50px", marginTop:"20px " }}>
+        <input type="text" value={this.uniqueKey} readOnly="readOnly"></input>
+        <input type="text" onChange={this.handleChangeName} placeholder="Display Name" value={this.state.name}></input>
+        <br/><br/>
+        <button onClick={this.handleConnection}>Connect</button>
+        <br/><br/>
+        <textarea onChange={this.handleChangeMessge} placeholder="Type your word"></textarea>
+        <br/><br/>
+        <button onClick={this.handleSend}>Send</button>
+        <ul>
+          {this.state.messages.map((item, index) => {
+             return <li key={index}>
+                <span>{item.fromProfile.name}: </span>
+                <span>{item.body} </span>
+                <span>{item.sendDate}</span>
+               </li>;
+          })}
+        </ul>
+      </div>
     );
   }
 }

@@ -16,7 +16,7 @@
             _eventBus = eventBus;
         }
 
-        [Route("")]
+        [HttpPost("")]
         public async Task<IActionResult> Post([FromBody] UserEvent dto)
         {
             await _eventBus.PublishAsync(dto, new string[] { "client2" });

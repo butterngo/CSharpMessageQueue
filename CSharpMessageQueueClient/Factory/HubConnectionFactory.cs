@@ -27,9 +27,9 @@
                 var hubConnection = new HubConnectionBuilder()
                                    .WithUrl(url, context => { }).Build();
 
-                hubConnection.On("NotifyUserConnect", notifyUserConnect);
+                hubConnection.On("NotifyUserConnected", notifyUserConnect);
 
-                hubConnection.On("NotifyUserDisconnect", notifyUserDisconnect);
+                hubConnection.On("NotifyUserDisconnected", notifyUserDisconnect);
 
                 hubConnection.On("NotifyUserDuplicated", notifyUserDuplicated);
 

@@ -8,6 +8,7 @@
 
     public class Startup
     {
+        //https://github.com/neuecc/MessagePack-CSharp#pre-code-generationunityxamarin-supports
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -33,20 +34,21 @@
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
 
-            //app.AllowOrigins(Configuration);
+            app.AllowOrigins(Configuration);
 
             //app.UseAuthentication();
-
-            app.UseCors(builder => builder
-               .SetIsOriginAllowedToAllowWildcardSubdomains()
-               .WithOrigins(new string[] { "http://localhost:3000" })
-               .AllowAnyMethod()
-               .AllowAnyHeader());
-
+            
+            
             app.UseSignalR(routes => 
             {
                 routes.MapHub<CSharpMessageHub>(Configuration.GetValue<string>("EndPoint"),
                     options => 
+                    {
+                        options.ApplicationMaxBufferSize = 2048 * 1024;
+                    });
+
+                routes.MapHub<JsCSharpMessageHub>($"/js{Configuration.GetValue<string>("EndPoint")}",
+                    options =>
                     {
                         options.ApplicationMaxBufferSize = 2048 * 1024;
                     });
