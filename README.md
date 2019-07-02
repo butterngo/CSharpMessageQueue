@@ -1,17 +1,17 @@
 # CSharpMessageQueue
 you using dotnet core version 2.2.0 and signalr core 1.1.0 
 # Description
-This is message queue server it's help you delivery message to client visa signlr. 
-You can using javascript signlr or use signlr client from BE received message.
+This is a message queue server it helps you a delivery message to the client visa signal. 
+You can be using a javascript signal or use signal client from BE received message.
 # Configuration server
 You need to open appsettings.Development.json and change your configuration or keep it.
 - {
-  - "AllowedHosts": "*",
+  - "Origins": "http://localhost:3000",
   - "EndPoint": "/c-sharp-message-queue",
   - "Host": "http://*:7500",
   - "EnableLog": true
 - } 
-- AllowedHosts: default all or you can limit host it's up to you.
+- Origins: Configuration cross domain.
 - EndPoint: you can change your endpoint you want example :"abc...".
 - Host: Port for server.
 - EnableLog: if you want the system log message set true, else false.
@@ -21,11 +21,11 @@ Open file log4net.config change your folder path inline "log4net.Util.PatternStr
   <file type="log4net.Util.PatternString" value="C:\inetpub\wwwroot\SiteOneServiceBus\\logs\\debugger\\%date{dd_MM_yyyy}.log" />
 ```
 # Create Window service
-You need create a publish from visual studio or use the command line, continue create file Environment.txt, make follow your Environment, then you just create services follow the article https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/sc-create.
+You need to create a publish from a visual studio or use the command line, continue to create file Environment.txt, make follow your Environment, then you just create services follow the article https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/sc-create.
 # CSharpMessageQueueClient
 you using dotnet core version 2.2.0 and signalr core 1.1.0 
 # Description
-I develop it by signlr core client, it's help us connect, received, send and tracking message between client and server.
+I develop it by signalr core client, it helps us connect, received, send and track messages between client and server.
 # Documentation
 - Configuration host server and client name reminder client name is unique.
 ```
@@ -67,16 +67,16 @@ I develop it by signlr core client, it's help us connect, received, send and tra
                 //TODO your logic
             };
   ```
-  3. OnNotifyUserConnect => server notify when client connect success.
+  3. OnNotifyUserConnected => server notify when client connect success.
   ```
-    app.StartConnection().OnNotifyUserConnect += async (sender, message) =>
+    app.StartConnection().OnNotifyUserConnected += async (sender, message) =>
             {
                 //TODO your logic
             };
   ```
-  4. OnNotifyUserDisconnect => server notify when client disconnect.
+  4. OnNotifyUserDisconnected => server notify when client disconnect.
    ```
-    app.StartConnection().OnNotifyUserDisconnect += async (sender, message) =>
+    app.StartConnection().OnNotifyUserDisconnected += async (sender, message) =>
             {
                 //TODO your logic
             };
@@ -118,4 +118,4 @@ I develop it by signlr core client, it's help us connect, received, send and tra
             return Ok("Done");
         }
    ```
-  You can access to my blog we have a lot of example fot it http://www.c-sharp.vn/.
+  You can access my blog we have a lot of examples about it http://www.c-sharp.vn/.
