@@ -20,3 +20,4 @@
 /.vs/CSharpMessageQueue/v16/Server/sqlite3/storage.ide-shm
 /.vs/CSharpMessageQueue/v16/Server/sqlite3/storage.ide-wal
 /reactjs/my-app/package-lock.json
+/reactjs/my-app/yarn.lock
