@@ -19,3 +19,4 @@
 /.vs/CSharpMessageQueue/v16/Server/sqlite3/storage.ide
 /.vs/CSharpMessageQueue/v16/Server/sqlite3/storage.ide-shm
 /.vs/CSharpMessageQueue/v16/Server/sqlite3/storage.ide-wal
+/reactjs/my-app/package-lock.json

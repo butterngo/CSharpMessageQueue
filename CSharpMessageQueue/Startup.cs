@@ -38,7 +38,6 @@
 
             //app.UseAuthentication();
             
-            
             app.UseSignalR(routes => 
             {
                 routes.MapHub<CSharpMessageHub>(Configuration.GetValue<string>("EndPoint"),
