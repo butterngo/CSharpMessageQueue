@@ -5,9 +5,7 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using CSharpEventBus;
     using CSharpMessageQueueClient;
-    using CSharpMessageQueueClient.Events;
     using CSharpMessageQueueClient.Models;
     using Newtonsoft.Json;
 
@@ -31,25 +29,21 @@
 
         public async Task PublishAsync(IntegrationEvent @event, string[] tos)
         {
-            try
+            var message = JsonConvert.SerializeObject(@event);
+
+            var body = Encoding.UTF8.GetBytes(message);
+
+            await _connectionFactory.SendAsync(new CSharpMessage
             {
-                var message = JsonConvert.SerializeObject(@event);
+                Body = body,
+                Tos = tos,
+                Label = @event.GetType().Name
+            });
 
-                var body = Encoding.UTF8.GetBytes(message);
-
-                await _connectionFactory.SendAsync(new CSharpMessage
-                {
-                    Body = body,
-                    Tos = tos,
-                    Label = @event.GetType().Name
-                });
-            }
-            catch(Exception ex)
-            {
-
-            }
-           
         }
+
+        public async Task PublishAsync(IntegrationEvent @event) 
+            => await InvokeAsync(@event.GetType().Name, @event);
 
         public void Subscribe<T>(IIntegrationEventHandler<T> handler) where T : IntegrationEvent
         {
@@ -106,24 +100,13 @@
 
                 if (_handlers.ContainsKey(eventName))
                 {
-                    Type eventType = _eventTypes.Single(t => t.Name == eventName);
+                    await InvokeAsync(eventName, body);
 
-                    var integrationEvent = JsonConvert.DeserializeObject(body, eventType);
-
-                    var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
-
-                    var handlers = _handlers[eventName];
-
-                    foreach (var handler in handlers)
-                    {
-                        await (Task)concreteType.GetMethod("Handle").Invoke(handler, new object[] { integrationEvent });
-
-                        await _connectionFactory.ProcessCompletedMessageAsync(message);
-                    }
+                    await _connectionFactory.ProcessCompletedMessageAsync(message);
                 }
                 else
                 {
-                   
+                    throw new Exception($"Not found event {eventName}");
                 }
 
             }
@@ -136,7 +119,22 @@
 
         private void HandleCompletedMessageReceived(CompletedMessageReceived args)
         {
-            //TODO Some logic
+            //TODO
+        }
+
+        private async Task InvokeAsync(string eventName, object obj)
+        {
+            Type eventType = _eventTypes.Single(t => t.Name == eventName);
+
+            var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
+
+            var handlers = _handlers[eventName];
+
+            foreach (var handler in handlers)
+            {
+                await (Task)concreteType.GetMethod("Handle").Invoke(handler, new object[] { obj });
+            }
+
         }
 
         public void Dispose()

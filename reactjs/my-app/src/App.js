@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import './App.css';
-import * as signalR from '@aspnet/signalr';
 import * as uuidv4 from 'uuid/v4';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {connect} from 'react-redux';
+import * as csharpQueue from './csharp-message-queue-factory';
 
 toast.configure({
   autoClose: 2000,
@@ -18,27 +19,13 @@ class App extends Component {
     this.uniqueKey = uuidv4();
      
     this.state = { name:"", value:"", messages:[] };
+
   }
 
-  notifyUserConnected = (data) => {
-    toast.success(`${data.profile.name} connected`);
+  componentWillReceiveProps(nextprops) {
+    if(nextprops.ChatStore.toastMessage !=="") toast.success(nextprops.ChatStore.toastMessage);
   }
-  
-  notifyUserDisConnected = (data) => {
-    toast.info(`${data.profile.name} disconnected`);
-  }
-  
-  notifyUserDuplicated = (data) => {
-    toast.error(`The unique-key is Duplication:  ${data.uniqueKey}`);
-  }
-  
-  messageReceived = (data) =>{
-    
-    this.state.messages.push(data);
 
-    this.setState({ messages: this.state.messages});
-  }
-  
   handleChangeMessge = (e) => { 
     this.setState({ value: e.target.value });
   }
@@ -48,27 +35,14 @@ class App extends Component {
   }
 
   handleSend = (e) => {
-    this.connection.invoke("SendAsync", { 
+    csharpQueue.factory.publish({ 
       body: this.state.value,
+      label:"RECEIVED_MESSAGE",
       sendToAll:true
     });
   };
   
-  handleConnection = (e) => {
-    this.connection = new signalR.HubConnectionBuilder()
-    .withUrl(`http://localhost:7500/js/c-sharp-message-queue?uniqueKey=${this.uniqueKey}&name=${this.state.name}`, {})
-    .build();
-
-    this.connection.start().then(function () { });
-
-    this.connection.on("NotifyUserConnected", this.notifyUserConnected);
-   
-    this.connection.on("NotifyUserDisConnected", this.notifyUserDisConnected);
-
-    this.connection.on("NotifyUserDuplicated", this.notifyUserDuplicated);
-
-    this.connection.on("MessageReceived", this.messageReceived);
-  };
+  handleConnection = (e) => csharpQueue.factory.start({uniqueKey: this.uniqueKey, name: this.state.name });
 
   render() {
     return (
@@ -82,7 +56,7 @@ class App extends Component {
         <br/><br/>
         <button onClick={this.handleSend}>Send</button>
         <ul>
-          {this.state.messages.map((item, index) => {
+          {this.props.ChatStore.messages.map((item, index) => {
              return <li key={index}>
                 <span>{item.fromProfile.name}: </span>
                 <span>{item.body} </span>
@@ -95,4 +69,6 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = state => state;
+
+export default connect(mapStateToProps)(App);

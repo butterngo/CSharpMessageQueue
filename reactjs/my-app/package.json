@@ -7,8 +7,10 @@
     "@aspnet/signalr-protocol-msgpack": "^1.1.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-redux": "^7.1.0",
     "react-scripts": "3.0.0",
     "react-toastify": "^5.3.1",
+    "redux": "^4.0.4",
     "uuid": "^3.3.2"
   },
   "scripts": {

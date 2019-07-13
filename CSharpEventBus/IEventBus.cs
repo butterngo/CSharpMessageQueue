@@ -10,5 +10,7 @@
 
         Task PublishAsync(IntegrationEvent @event, string[] tos);
 
+        Task PublishAsync(IntegrationEvent @event);
+
     }
 }
