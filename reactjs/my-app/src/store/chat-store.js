@@ -1,5 +1,5 @@
-import * as csharpQueue from '../csharp-message-queue-factory';
-const RECEIVED_MESSAGE = "RECEIVED_MESSAGE";
+import * as actionTypes from '../action_type';
+
 const defaultState = {
     messages:[],
     profile:{},
@@ -7,15 +7,14 @@ const defaultState = {
 }
 
 export default function ChatStore(state = defaultState, action) {
-    console.log(action);
     switch (action.type) {
-        case csharpQueue.NOTIFY_USER_CONNECTED:
+        case actionTypes.CSHARP_NOTIFY_USER_CONNECTED:
             return {
                     ...state,
                     profile: action.params.profile,
                     toastMessage: `${action.params.profile.name} connected`
                  };
-        case RECEIVED_MESSAGE:
+        case actionTypes.CHAT_MESSAGE:
                 var messages = state.messages;
                 messages.push(action.params);
             return {
